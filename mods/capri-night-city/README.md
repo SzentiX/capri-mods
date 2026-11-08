@@ -1,91 +1,53 @@
 # Capri Night City
 
-Bring Capri into Cyberpunk 2077: ask her to hack nearby NPCs, vehicles and devices, tag contacts through walls, protect V and cast eight custom netrunner programs.
+Connect Capri to Cyberpunk 2077 for nearby/group hacks, native scanner tags, vehicles and devices, eight custom netrunner programs, Protect Me, stealth and optional chaos.
 
-- Kind: code mod
 - Made by: NoxEterna
-- Version: 1.9.3
+- Version: 1.9.4
 - Platform: Windows
-- Requires: Capri Desktop (interface checked with 0.8.5), Cyberpunk 2077 and Cyber Engine Tweaks (CET)
+- Requires: Capri Desktop, Cyberpunk 2077 and a separately installed Cyber Engine Tweaks (CET) bridge
 
 ![Capri Night City preview](preview.png)
 
-## What she can do
+## Install
 
-- **Natural commands and groups:** “flatline him”, “blind those three guards”, “stop the car” or “hack the camera”. Nearby-person commands choose an eligible NPC; “the guy in front of me” uses the crosshair. Groups affect up to five targets.
-- **Eight custom programs:** Ghost Veil, Marionette Lock, Dead Channel, Neural Siphon, Furnace Lock, Circuit Breaker, Crash Loop and Reaper Thread. See [HACKS.md](HACKS.md).
-- **Continuous scanning:** native scanner tags for eligible enemies, neutral NPCs and adult civilians, refreshed through walls within the configured range (35 metres by default).
-- **Protect Me, stealth and chaos:** frequent defensive control hacks, quiet control programs, or optional autonomous actions against nearby supported NPCs, cars and devices.
-- **Emergency rescue:** strictly below **50 raw HP**, request up to five hostile eliminations and heal V for **100 raw HP**, capped at maximum. Persistent **120-second cooldown**; suspended in stealth.
-- **Netrunner defense:** retaliate against the actual incoming hacker/trace source with a silent body-drop request. Bodies remain discoverable.
-- **Contextual reactions:** important game events can be rephrased by Capri's configured brain and personality, with bounded reporting and literal manual acknowledgements as fallback.
+Install and approve **Capri Night City** through Capri's Mods window. This directory entry installs only the `.capri-code` client.
 
-## Install both parts
+The game connection also requires the [separate CET bridge download](https://github.com/SzentiX/capri-night-city/releases/tag/v1.9.4). Its Lua, optional scripts and full source live in [their own repository](https://github.com/SzentiX/capri-night-city). **That external download is separate from this submission and has not been checked by the Capri mod directory reviewers.** Follow its [manual bridge installation guide](https://github.com/SzentiX/capri-night-city/blob/main/BRIDGE-INSTALL.md).
 
-The directory's Install button installs the Capri client only. The separate **CET game bridge is required** for commands to affect Cyberpunk.
+After installing the bridge, say or type `night city connect` and select its **CapriNightCityBridge** folder containing `init.lua`. Start Cyberpunk, load a save, close the menus and check `night city status`.
 
-1. Install [Capri Desktop](https://github.com/lachydotmcg/capri-desktop/releases) and [Cyber Engine Tweaks](https://github.com/maximegmd/CyberEngineTweaks/releases). Close Capri and Cyberpunk before copying files.
-2. Download the [complete Night City 1.9.3 package](https://github.com/SzentiX/capri-mods/releases/download/night-city-v1.9.3/Capri-Night-City-1.9.3.zip) and extract it. Open the extracted folder containing `Install.ps1`. The same files are included here for source review and manual installation.
-3. In PowerShell, run the installer with **your actual game folder**:
-
-   ```powershell
-   .\Install.ps1 -GameRoot 'D:\SteamLibrary\steamapps\common\Cyberpunk 2077'
-   ```
-
-   If Windows blocks the downloaded script, review it and use `Unblock-File .\Install.ps1` first. The installer checks the game executable and CET, copies only this mod's files, preserves existing tuning/settings, writes Capri's bridge location and prints the backup manifest path. Keep that path for rollback. It supports `-CapriData` for a nonstandard Capri data folder.
-
-4. Start Capri, open **Mainframe > Mods**, and enable/approve **Capri Night City**. Start Cyberpunk and load a save. Say or type `night city status`, then `scan` or `protect me`.
-
-### Manual installation
-
-Copy this folder's `CapriNightCityBridge` directory to `<Cyberpunk 2077>\bin\x64\plugins\cyber_engine_tweaks\mods\CapriNightCityBridge`. Import `capri-night-city.capri-code` through Capri's Mods window (or install its directory entry), enable it and approve it. Say/type `night city connect` and select that **CapriNightCityBridge folder containing `init.lua`**, then load a save and check `night city status`.
-
-There is no personal drive path or automatic game discovery in a fresh import. Update both the Capri file and CET bridge together; restart Capri and Cyberpunk and approve the changed code mod. A backup-aware installer can also stage an update with `-StageForRestart`; the running game keeps its old Lua until restarted.
-
-## Try these commands
+## Commands
 
 | Say or type | Result |
-|---|---|
-| `night city hacks` | Hear the custom program catalogue. |
-| `flatline him` | Target a nearby eligible NPC, independent of the car under the crosshair. |
+| --- | --- |
+| `night city hacks` | List the eight custom programs. |
+| `flatline him` | Request a kill on a nearby eligible NPC. |
 | `blind the guy in front of me` | Use the aimed NPC. |
-| `use Ghost Veil on those three guards` | Group memory wipe and blindness. |
-| `put him in a crash loop` | Timed electrical damage and weapon malfunction. |
-| `scan` / `stop scanning` | Start continuous native tagging / clear owned tags. |
+| `use Ghost Veil on those three guards` | Group memory wipe and blindness, up to five targets. |
+| `scan` / `stop scanning` | Start native tagging / clear this mod's tags. |
 | `protect me` / `protection off` | Toggle defensive control hacks. |
 | `stealth mode on` / `go loud` | Enable quiet control / leave stealth. |
 | `chaos mode on` / `chaos mode off` | Toggle optional nearby-target chaos. |
 | `netrunner defense on` / `counterhack off` | Toggle incoming-hacker retaliation. |
-| `emergency off` / `emergency rescue on` | Disarm / arm the low-health rescue. |
-| `stop the car` / `blow up the car` | Aim at a supported vehicle for braking / explosion. |
-| `hack the camera` / `hack the access point` | Request an advertised device action / native network breach. |
-| `stand down` | Disable autonomous modes/scanning and cancel tracked pending effects. |
-| `night city status` / `night city dashboard` | Diagnose the bridge and current modes. |
+| `emergency rescue on` / `emergency off` | Arm / disarm rescue below 50 raw HP, with a 120-second cooldown. |
+| `stop the car` / `blow up the car` | Request a supported vehicle action. |
+| `hack the camera` / `hack the access point` | Request a native device action / network breach. |
+| `stand down` | Disable autonomous modes and cancel tracked pending effects. |
+| `night city status` / `night city dashboard` | Diagnose the link and modes. |
 
-The [complete command reference](COMMANDS.md) includes aliases, templates, targeting rules, cooldowns and mode interactions. Use one action per command; natural phrasing uses a bounded local grammar. Unmatched wording can go to ordinary conversation.
+General phrases including **stop it, open it, scan, calm down, go quiet, protect me and do your thing** are handled only with a fresh heartbeat, loaded save and closed menus. Without that live link, they pass through to Capri, so `stop it` can still cancel her ordinary jobs. Explicit `night city` commands remain available offline for setup and diagnostics; you can also prefix game commands, such as `night city scan`.
 
-## Defaults, privacy and limits
+Use one action per command. Natural wording uses a bounded local grammar. See the external [command reference](https://github.com/SzentiX/capri-night-city/blob/main/COMMANDS.md) and [program guide](https://github.com/SzentiX/capri-night-city/blob/main/HACKS.md) for aliases, targeting and cooldowns.
 
-Emergency rescue, netrunner defense and regular combat assistance start armed according to the bridge settings; chaos starts off. `stand down` disarms autonomous modes for the session. Configure range and intervals in the installed `CapriNightCityBridge/settings.json`; existing settings are preserved on update.
+## Privacy and limits
 
-The bridge exchanges bounded local text files with Capri. Contextual reports pass selected game facts to **your configured Capri brain/provider**; a cloud provider therefore receives those facts. `night city quiet` stops ambient game reactions; `night city reactions` enables them again. No API key is bundled and there is no separate mod service or telemetry endpoint.
+The bridge exchanges bounded local text files. Contextual report wording uses your configured Capri brain/provider, so a cloud provider receives the selected game facts. `night city quiet` mutes ambient game reactions; `night city reactions` enables them again. No key or separate mod telemetry service is bundled.
 
-The game must expose loaded, eligible targets. Child, boss, quest-protected and immortal targets, V and V's occupied car are skipped. Scanning does not authorize automatic attacks on neutral NPCs; Protect Me targets hostiles. Device hacks require the device's advertised remote actions. Access-point breach does not fabricate datamine rewards or solve arbitrary minigame programs. Native scanning/cybereye restrictions and HUD settings still apply.
+Default range is 35 m. Protected targets, children, bosses, V and V's occupied car are skipped. Protect Me targets hostiles; scanning neutral NPCs does not authorize automatic attacks. Native game targeting, device actions and HUD/cyberware restrictions still apply. A request acknowledgement is not proof of a kill, explosion or rendered outline. Completed game consequences persist.
 
-An upload acknowledgement confirms a request, not a confirmed death, explosion or rendered outline. Native effects and other mods can change outcomes. Ordinary manual/group hacks share an eight-second cooldown; Blackwall has a separate 180-second cooldown. Menus, stale connection and session changes stop work/clean up tracked effects. Completed deaths, explosions and breaches persist as game consequences.
+Typing and Capri's normal local-brain voice dispatch support commands; the separate ElevenLabs server-agent route may bypass code mods. Internal Capri reporting interfaces may change in future versions.
 
-Use typing or Capri's normal local-brain voice path for commands. The separate ElevenLabs agent voice route may bypass code-mod command dispatch. This mod uses internal Capri interfaces for brain reporting, which a future Capri update can change. See [VALIDATION.md](VALIDATION.md) for automated evidence and remaining runtime limits.
+The client compiled against Capri 0.8.6.1. The external test suite passed 222 game mocks and 289 client/protocol checks, including offline command-ownership regressions. Live gameplay, microphone/HUD behavior and profiling remain unverified. Disable/remove the client in Capri; follow the separate bridge guide to remove the game-side files.
 
-## Remove or roll back
-
-Disable the code mod in Capri and close Cyberpunk. For an installer-managed deployment, use the exact manifest printed at install time:
-
-```powershell
-.\Uninstall.ps1 -Deployment '<game folder>\CapriNightCity-backups\<timestamp>\deployment.json'
-```
-
-Rollback checks every installed/backup hash and refuses to overwrite files edited since installation. It restores prior files or removes this installation's new files; it retains runtime data, user settings and unrelated mods. A manual installation can be removed by deleting only `CapriNightCityBridge` and removing the Capri mod after disabling it.
-
-## Build and check
-
-Run `Build.ps1` on Windows with Lua and its syntax checker available (tested with Lua 5.5), plus .NET Framework's C# compiler. Custom paths can be supplied using `-Lua` and `-Luac`. It runs Lua gameplay mocks, C#/protocol and cross-process fixtures, optional installed-Capri compilation and installer/rollback fixtures. It creates a complete installable ZIP under `out` with SHA-256 checksums. This is an unofficial fan integration and includes no game assets.
+Credit: [Capri Desktop by lachydotmcg and contributors](https://github.com/lachydotmcg/capri-desktop). Unofficial fan integration; no game assets included.

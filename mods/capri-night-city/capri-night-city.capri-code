@@ -1,7 +1,7 @@
 // capri-mod: 1
 // id: capri-night-city
 // name: Capri Night City
-// version: 1.9.3
+// version: 1.9.4
 // author: NoxEterna
 // description: Eight custom programs, native game hacks, silent netrunner defense and NPC scanning. Say night city hacks.
 
@@ -90,6 +90,8 @@ namespace CapriNightCity
         private readonly Dictionary<string,long> cooldowns=new Dictionary<string,long>();
         public BridgeClient(string folder) { Folder=folder; }
         public bool Connected(long now) { return Wire.Fresh(Snapshot,now); }
+        public bool Live(long now)
+        { return Connected(now) && Wire.Get(Snapshot,"session")!="" && Wire.Get(Snapshot,"ready")=="1" && Wire.Get(Snapshot,"menu")=="0"; }
         public bool HasPending { get { return pending!=""; } }
         public void MuteReactions() { Reactions=false; queued=""; priority=0; }
         public string Queue(string action,long now,string selection="aim",string expected="",int count=1)
@@ -212,7 +214,7 @@ namespace CapriNightCity
                 ". Emergency " + (Wire.Get(Snapshot,"emergency")=="1" ? "armed below 50 HP" : "off") + " ("+Wire.Get(Snapshot,"rescue_remaining")+" seconds cooldown)"+
                 ". " + (Wire.Get(Snapshot,"target_name")!="" ? "Crosshair target: " + Wire.Get(Snapshot,"target_name") + " ("+Wire.Get(Snapshot,"target_kind")+")." : "No crosshair target.");
         }
-        public static string Keyword(string words)
+        private static string NormalizeRequest(string words)
         {
             string text=(words??"").ToLowerInvariant().Replace('\u2019','\'');
             text=Regex.Replace(text,@"[,.!?;:]"," ");
@@ -225,6 +227,21 @@ namespace CapriNightCity
             text=Regex.Replace(text,@"(?:\s+(?:right now|now|please|for me))+$","").Trim();
             text=Regex.Replace(text,@"\bthe (?:f|fucking|damn) ","the ");
             if(addressed) text=Regex.Replace(text,@"^killed ","kill ");
+            return text;
+        }
+        // Only explicitly namespaced commands are owned while disconnected. In particular,
+        // "stop it" must pass through to Capri's native job cancellation outside a live save.
+        public static string Command(string words,bool gameLive)
+        {
+            string text=NormalizeRequest(words);
+            const string prefix="night city ";
+            if(text.StartsWith(prefix,StringComparison.Ordinal))
+                return Keyword(text) ?? Keyword(text.Substring(prefix.Length));
+            return gameLive ? Keyword(words) : null;
+        }
+        public static string Keyword(string words)
+        {
+            string text=NormalizeRequest(words);
             string custom=CustomKeyword(text); if(custom!=null) return custom;
             switch(text)
             {
@@ -553,7 +570,16 @@ namespace CapriNightCity
         public bool Heard(string words)
         {
             if(stopping || host==null) return false;
-            string action=BridgeClient.Keyword(words); if(action==null) return false;
+            string action=BridgeClient.Command(words,false);
+            if(action==null)
+            {
+                // Do not swallow normal Capri commands or announce a busy game link when
+                // its worker is busy and no live game context can be established.
+                if(!Monitor.TryEnter(gate)) return false;
+                try { action=BridgeClient.Command(words,client!=null && client.Live(Wire.Now)); }
+                finally { Monitor.Exit(gate); }
+            }
+            if(action==null) return false;
             if(action=="help") { host.Say("Say night city hacks for my eight custom programs. Try Ghost Veil on those guards, put him in a crash loop, or drain his health. Scan includes neutral NPCs and civilians. Protect me uses frequent control hacks; netrunner defense on enables silent retaliation. Stealth mode on blocks damaging programs. Stand down stops autonomous modes and pending programs; night city status shows the link."); return true; }
             if(action=="hacks") { host.Say("Ghost Veil wipes memory and blinds; Marionette Lock blinds, jams and stuns; Dead Channel wipes memory and jams; Neural Siphon drains health and heals you; Furnace Lock burns and stuns; Circuit Breaker shocks and jams; Crash Loop pulses electrical damage; Reaper Thread stuns, then executes. Say a name, optionally on him or those guards."); return true; }
             if(action=="dashboard") { ShowDashboard(); return true; }
@@ -604,7 +630,7 @@ namespace CapriNightCity
                 if(!Monitor.TryEnter(gate)) return;
                 try
                 {
-                    display.Text="CAPRI // NIGHT CITY 1.9.3\r\n\r\n"+client.Report(Wire.Now)+"\r\n\r\n"+client.State+"\r\n"+client.Folder+
+                    display.Text="CAPRI // NIGHT CITY 1.9.4\r\n\r\n"+client.Report(Wire.Now)+"\r\n\r\n"+client.State+"\r\n"+client.Folder+
                         "\r\n\r\nNPCs: Kill the guy / Blind him / Hack that guy\r\nCUSTOM: Ghost Veil / Marionette Lock / Dead Channel\r\nNeural Siphon / Furnace Lock / Circuit Breaker\r\nCrash Loop / Reaper Thread / Night city hacks\r\nCARS: Stop the car / Accelerate the car / Blow it up\r\nDEVICES: Hack the camera / Turn off the device\r\nOpen the door / Distract using the vending machine\r\nACCESS POINTS: Hack the access point\r\n\r\nCHAOS MODE ON / CHAOS MODE OFF\r\nChaos picks nearby adult NPCs, cars and devices,\r\nincluding neutral targets, even outside combat.\r\n\r\nStand down stops all autonomous attacks.\r\nProtected game targets and V's occupied car are skipped.";
                 }
                 finally { Monitor.Exit(gate); }

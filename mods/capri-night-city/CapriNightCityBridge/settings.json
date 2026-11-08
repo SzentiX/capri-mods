@@ -1,9 +1,0 @@
-{
-  "autoAssist": true,
-  "blackwallChance": 0.03,
-  "autoInterval": 18,
-  "range": 35,
-  "chaosInterval": 10,
-  "protectInterval": 1.5,
-  "counterNetrunners": true
-}
